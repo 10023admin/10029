@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>后台管理系统</title>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f4f8ff;
+}
+
+.topbar{
+  background:#1e5eff;
+  color:white;
+  padding:15px;
+  font-size:18px;
+}
+
+.container{
+  padding:20px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+input{
+  padding:8px;
+  margin:5px;
+}
+button{
+  padding:8px 12px;
+  background:#1e5eff;
+  color:white;
+  border:none;
+  border-radius:6px;
+}
+
+table{
+  width:100%;
+  margin-top:10px;
+  border-collapse:collapse;
+}
+
+td,th{
+  border:1px solid #ddd;
+  padding:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">XJ陪玩后台信息管理系统（政务版）</div>
+
+<div class="container">
+
+<div class="card">
+<h3>信息查询</h3>
+
+<input id="qname" placeholder="输入姓名">
+<input id="qgame" placeholder="输入陪玩游戏">
+<button onclick="search()">查询</button>
+
+<table>
+<thead>
+<tr>
+<th>姓名</th><th>性别</th><th>年龄</th><th>游戏</th><th>段位</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script type="module">
+import { supabase } from './supabase.js';
+
+window.search = async function(){
+  let name = qname.value;
+  let game = qgame.value;
+
+  let { data } = await supabase
+    .from('players')
+    .select('*')
+    .ilike('name', `%${name}%`)
+    .ilike('game', `%${game}%`);
+
+  list.innerHTML = data.map(i=>`
+    <tr>
+      <td>${i.name}</td>
+      <td>${i.gender}</td>
+      <td>${i.age}</td>
+      <td>${i.game}</td>
+      <td>${i.rank}</td>
+    </tr>
+  `).join("");
+}
+</script>
+
+</body>
+</html>
